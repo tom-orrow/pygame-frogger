@@ -3,6 +3,8 @@ import pygame
 
 from player import Player
 from car import Car
+from sprite import SimpleSprite
+from sprite import LongSprite
 from settings import *
 from random import choice, randint
 
@@ -39,7 +41,20 @@ clock = pygame.time.Clock()
 all_sprites = AllSprites()
 
 # sprites
-player = Player((600, 400), all_sprites)
+player = Player((2062, 3274), all_sprites)
+
+# sprite setup
+for file_name, pos_list in SIMPLE_OBJECTS.items():
+    path = f"../graphics/objects/simple/{file_name}.png"
+    surf = pygame.image.load(path).convert_alpha()
+    for pos in pos_list:
+        SimpleSprite(surf, pos, all_sprites)
+
+for file_name, pos_list in LONG_OBJECTS.items():
+    path = f"../graphics/objects/long/{file_name}.png"
+    surf = pygame.image.load(path).convert_alpha()
+    for pos in pos_list:
+        LongSprite(surf, pos, all_sprites)
 
 # timer
 car_timer = pygame.event.custom_type()
