@@ -51,6 +51,8 @@ class Player(pygame.sprite.Sprite):
     def import_assets(self):
         self.animations = {}
         for index, folder in enumerate(walk("../graphics/player")):
+            folder = list(folder)
+            folder[0] = folder[0].replace("\\","/")
             if index == 0:
                 for name in folder[1]:
                     self.animations[name] = []
