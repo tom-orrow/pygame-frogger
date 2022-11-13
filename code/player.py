@@ -1,9 +1,10 @@
 import pygame
+import sys
 from os import walk
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups):
+    def __init__(self, pos, groups, collision_sprites):
         super().__init__(groups)
 
         self.import_assets()
@@ -16,6 +17,31 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(self.rect.center)
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 200
+
+        # collisions
+        self.colliion_sprites = collision_sprites
+
+    def collision(self, direction):
+        for sprite in self.colliion_sprites.sprites():
+            if sprite.rect.colliderect(self.rect):
+                if hasattr(sprite, "name") and sprite.name == "car":
+                    pygame.quit()
+                    sys.exit()
+
+                if direction == "horizontal":
+                    if self.direction.x > 0:  # moving right
+                        self.rect.right = sprite.rect.left
+                        self.pos.x = self.rect.centerx
+                    if self.direction.x < 0:  # moving left
+                        self.rect.left = sprite.rect.right
+                        self.pos.x = self.rect.centerx
+                else:
+                    if self.direction.y > 0:  # moving down
+                        self.rect.bottom = sprite.rect.top
+                        self.pos.y = self.rect.centery
+                    if self.direction.y < 0:  # moving up
+                        self.rect.top = sprite.rect.bottom
+                        self.pos.y = self.rect.centery
 
     def import_assets(self):
         self.animations = {}
@@ -34,8 +60,16 @@ class Player(pygame.sprite.Sprite):
         # normalize vector
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
-        self.pos += self.direction * self.speed * dt
-        self.rect.center = round(self.pos.x), round(self.pos.y)
+
+        # horizontal movement + collision
+        self.pos.x += self.direction.x * self.speed * dt
+        self.rect.centerx = round(self.pos.x)
+        self.collision("horizontal")
+
+        # vertical movement + collision
+        self.pos.y += self.direction.y * self.speed * dt
+        self.rect.centery = round(self.pos.y)
+        self.collision("vertical")
 
     def input(self):
         keys = pygame.key.get_pressed()

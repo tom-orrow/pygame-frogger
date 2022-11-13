@@ -39,22 +39,24 @@ clock = pygame.time.Clock()
 
 # groups
 all_sprites = AllSprites()
+obstacle_sprites = pygame.sprite.Group()
 
 # sprites
-player = Player((2062, 3274), all_sprites)
+player = Player((2062, 3274), all_sprites, obstacle_sprites)
+
 
 # sprite setup
 for file_name, pos_list in SIMPLE_OBJECTS.items():
     path = f"../graphics/objects/simple/{file_name}.png"
     surf = pygame.image.load(path).convert_alpha()
     for pos in pos_list:
-        SimpleSprite(surf, pos, all_sprites)
+        SimpleSprite(surf, pos, [all_sprites, obstacle_sprites])
 
 for file_name, pos_list in LONG_OBJECTS.items():
     path = f"../graphics/objects/long/{file_name}.png"
     surf = pygame.image.load(path).convert_alpha()
     for pos in pos_list:
-        LongSprite(surf, pos, all_sprites)
+        LongSprite(surf, pos, [all_sprites, obstacle_sprites])
 
 # timer
 car_timer = pygame.event.custom_type()
@@ -74,7 +76,7 @@ while True:
             if random_pos not in pos_list:
                 pos_list.append(random_pos)
                 pos = (random_pos[0], random_pos[1] + randint(-8, 8))
-                Car(pos, all_sprites)
+                Car(pos, [all_sprites, obstacle_sprites])
             if len(pos_list) > 5:
                 del pos_list[0]
 
