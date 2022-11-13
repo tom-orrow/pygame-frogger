@@ -63,6 +63,15 @@ car_timer = pygame.event.custom_type()
 pygame.time.set_timer(car_timer, 50)
 pos_list = []
 
+# font
+font = pygame.font.Font(None, 50)
+text_surf = font.render("Victory!", True, "white")
+text_rect = text_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
+
+# music
+music = pygame.mixer.Sound("../audio/music.mp3")
+music.play(loops=-1)
+
 # game loop
 while True:
     # event loop
@@ -92,6 +101,9 @@ while True:
 
         # draw
         all_sprites.customize_draw()
+    else:
+        display_surface.fill("teal")
+        display_surface.blit(text_surf, text_rect)
 
     # final frame
     pygame.display.update()
